@@ -1,5 +1,6 @@
 const redis = require('redis');
 
+
 class RedisClient {
     constructor() {
         this.client = redis.createClient();
@@ -9,11 +10,10 @@ class RedisClient {
         });
     }
 
-    async isAlive() {
-        try {
-            await this.client.ping();
+    isAlive = () => {
+        if (this.client.ping() === "PONG") {
             return true;
-        } catch (error) {
+        } else {
             return false;
         }
     }
@@ -32,7 +32,7 @@ class RedisClient {
 
     async set(key, value, durationInSeconds) {
         return new Promise((resolve, reject) => {
-            this.client.setex(key, durationInSeconds, value, (err) => {
+            this.client.setEx(key, durationInSeconds, value, (err) => {
                 if (err) {
                     reject(err);
                 } else {
